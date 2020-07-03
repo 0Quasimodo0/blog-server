@@ -57,7 +57,7 @@ public class VerificationController {
 					queryWrapper.eq(true, "username", params.get("username"));
 					to = userService.getOne(queryWrapper).getEmail();
 					key = params.get("username");
-					message = "【 详情 】您正在尝试进行登录操作，若非是您本人的行为，请忽略!";
+					message = "详情：您正在尝试进行登录操作，若非是您本人的行为，请忽略!";
 				}
 				break;
 			case "update":
@@ -67,7 +67,7 @@ public class VerificationController {
 					queryWrapper.eq(true, "id", params.get("id"));
 					to = userService.getOne(queryWrapper).getEmail();
 					key = params.get("id");
-					message = "【 详情 】您正在尝试进行修改操作，若非是您本人的行为，请忽略!";
+					message = "详情：您正在尝试进行修改操作，若非是您本人的行为，请忽略!";
 				}
 				break;
 			case "active":
@@ -78,7 +78,7 @@ public class VerificationController {
 					params.remove("to");
 					to = params.get("email").toString();
 					key = params.get("email");
-					message = "【 详情 】您正在尝试进行激活操作，若非是您本人的行为，请忽略!";
+					message = "详情：您正在尝试进行激活操作，若非是您本人的行为，请忽略!";
 				}
 				break;
 			default:

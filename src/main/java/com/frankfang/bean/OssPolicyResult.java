@@ -28,4 +28,7 @@ public class OssPolicyResult {
 	
 	@ApiModelProperty("oss对外服务的访问域名")
     private String host;
+
+	@ApiModelProperty("上传成功后的回调设置")
+	private String callback;
 }

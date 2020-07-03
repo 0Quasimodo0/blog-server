@@ -1,15 +1,11 @@
 package com.frankfang.controller;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.frankfang.entity.Like;
@@ -40,6 +36,8 @@ import com.frankfang.utils.HttpUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 @Slf4j
 @Api(tags = "文章模块接口")
@@ -137,6 +135,49 @@ public class ArticleController {
 		}
 		// 4. 返回结果
 		return new JsonResponse(page);
+	}
+
+	@ApiOperation(value = "上传文章")
+	@PostMapping("/admin/article/upload")
+	public Object upload(HttpServletRequest request) {
+		// MultipartHttpServletRequest params=((MultipartHttpServletRequest) request);
+		List<MultipartFile> multipartFiles = ((MultipartHttpServletRequest) request)
+				.getFiles("file");
+		/* String name=params.getParameter("name");
+		System.out.println("name:"+name);
+		String id=params.getParameter("id");
+		System.out.println("id:"+id); */
+		MultipartFile multipartFile = null;
+		BufferedOutputStream stream;
+		for (MultipartFile MF : multipartFiles) {
+			multipartFile = MF;
+			if (!multipartFile.isEmpty()) {
+				try {
+					byte[] bytes = multipartFile.getBytes();
+					stream = new BufferedOutputStream(new FileOutputStream(
+							new File(multipartFile.getOriginalFilename())));
+					stream.write(bytes);
+					stream.close();
+				} catch (Exception e) {
+					return new JsonResponse(HttpServletResponse.SC_BAD_REQUEST, "文件上传失败!");
+				}
+			} else {
+				return new JsonResponse(HttpServletResponse.SC_BAD_REQUEST, "文件上传内容不能为空!");
+			}
+		}
+		// 读取文件内容
+		try {
+			File file = new File(multipartFile.getOriginalFilename());
+			FileInputStream inputStream = new FileInputStream(file);
+			byte[] b = new byte[inputStream.available()];
+			inputStream.read(b);
+			inputStream.close();
+			file.delete();
+			return new JsonResponse("文件上传成功!", new String(b));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new JsonResponse(HttpServletResponse.SC_BAD_REQUEST, "文件读取失败!");
+		}
 	}
 	
 	@ApiOperation(value = "下载文章")
