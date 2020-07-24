@@ -40,4 +40,8 @@ public class Carousel implements Serializable {
     @TableField("url")
     private String url;
 
+    @ApiModelProperty(value = "链接")
+    @TableField("title")
+    private String title;
+
 }

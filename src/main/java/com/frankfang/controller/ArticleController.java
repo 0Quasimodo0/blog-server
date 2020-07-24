@@ -89,10 +89,14 @@ public class ArticleController {
 		QueryWrapper<Article> wrapper = new QueryWrapper<>();
 		wrapper.eq("id", id);
 		Map<String, Object> article = service.getMap(wrapper);
-		article.remove("content_md");
-		String tags = article.get("tags").toString();
-		article.replace("tags", tags.split(","));
-		return new JsonResponse(article);
+		if (article == null) {
+			return new JsonResponse(HttpServletResponse.SC_NOT_FOUND, "Error: Request failed with status code 404");
+		} else {
+			article.remove("content_md");
+			String tags = article.get("tags").toString();
+			article.replace("tags", tags.split(","));
+			return new JsonResponse(article);
+		}
 	}
 	
 	@ApiOperation(value = "获取文章信息(admin)")
